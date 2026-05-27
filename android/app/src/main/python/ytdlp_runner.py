@@ -63,3 +63,34 @@ def test_download(url: str, output_dir: str) -> str:
 def fetch_links(url, progress_callback=None):
     from link_fetcher import fetch_collection_links
     return fetch_collection_links(url, _cookie_path, _ffmpeg_location, progress_callback)
+
+
+def start_queue(
+    videos_json,
+    output_dir,
+    ids_file_path,
+    progress_callback,
+    queue_callback,
+    cancel_check,
+    storage_helper,
+):
+    """Entry point for DownloadService — runs synchronously in the caller's thread.
+
+    `videos_json` is a JSON-encoded list of `{id, url, title}` objects. We
+    parse it here so that downstream code sees real Python dicts instead of
+    Chaquopy Java-Map proxies (which break isinstance(entry, dict)).
+    """
+    import json
+    videos = json.loads(videos_json) if videos_json else []
+    from downloader import process_queue
+    return process_queue(
+        videos_list=videos,
+        output_dir=output_dir,
+        cookie_path=_cookie_path,
+        ffmpeg_path=_ffmpeg_location,
+        ids_file_path=ids_file_path,
+        progress_callback=progress_callback,
+        queue_callback=queue_callback,
+        cancel_check=cancel_check,
+        storage_helper=storage_helper,
+    )

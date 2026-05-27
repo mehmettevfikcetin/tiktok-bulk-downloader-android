@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/services/cookie_service.dart';
+import '../../core/theme/app_theme.dart';
+import '../../l10n/app_localizations.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({
@@ -28,11 +30,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Future<void> _open(String url) async {
     final uri = Uri.parse(url);
     final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
-    if (!ok && mounted) {
+    if (!mounted) return;
+    if (!ok) {
+      final l10n = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          backgroundColor: Colors.red.shade700,
-          content: Text('Could not open $url'),
+          backgroundColor: AppTheme.error,
+          content: Text(l10n.couldNotOpenUrl(url)),
         ),
       );
     }
@@ -40,24 +44,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   Future<void> _import() async {
     setState(() => _importing = true);
-    final messenger = ScaffoldMessenger.of(context);
     try {
       final ok = await widget.cookieService.importCookieFile();
       if (!mounted) return;
       if (ok) {
         widget.onCompleted();
       } else {
-        messenger.showSnackBar(
-          const SnackBar(
-            content: Text('No file selected.'),
-          ),
+        final l10n = AppLocalizations.of(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.noFileSelected)),
         );
       }
     } catch (e) {
-      messenger.showSnackBar(
+      if (!mounted) return;
+      final l10n = AppLocalizations.of(context);
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          backgroundColor: Colors.red.shade700,
-          content: Text('Import failed: $e'),
+          backgroundColor: AppTheme.error,
+          content: Text(l10n.importFailed(e.toString())),
         ),
       );
     } finally {
@@ -67,53 +71,67 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Set Up Cookies')),
+      appBar: AppBar(title: Text(l10n.onboardingTitle)),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                'TikTok requires cookies from a logged-in browser to download '
-                'your collections. Follow these steps:',
-                style: Theme.of(context).textTheme.bodyLarge,
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppTheme.accent.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: AppTheme.accent.withValues(alpha: 0.3),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.cookie_outlined, color: AppTheme.accent),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        l10n.onboardingIntro,
+                        style: const TextStyle(
+                          color: AppTheme.onSurface,
+                          height: 1.4,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
               _Step(
                 number: 1,
-                title: 'Install Firefox for Android',
-                description:
-                    'You need Firefox because Chrome on Android does not '
-                    'support extensions.',
+                title: l10n.onboardingStep1Title,
+                description: l10n.onboardingStep1Body,
                 action: OutlinedButton.icon(
                   onPressed: () => _open(_firefoxUrl),
                   icon: const Icon(Icons.open_in_new),
-                  label: const Text('Open Play Store'),
+                  label: Text(l10n.openPlayStore),
                 ),
               ),
               const SizedBox(height: 20),
               _Step(
                 number: 2,
-                title: 'Install the cookies.txt extension',
-                description:
-                    'In Firefox, install the "cookies.txt" extension by '
-                    'Lennon Hill from the Firefox Add-ons site.',
+                title: l10n.onboardingStep2Title,
+                description: l10n.onboardingStep2Body,
                 action: OutlinedButton.icon(
                   onPressed: () => _open(_extensionUrl),
                   icon: const Icon(Icons.extension),
-                  label: const Text('Open Add-on Page'),
+                  label: Text(l10n.openAddonPage),
                 ),
               ),
               const SizedBox(height: 20),
               _Step(
                 number: 3,
-                title: 'Export your cookies',
-                description:
-                    'Log into TikTok in Firefox, then tap the extension '
-                    'icon and export your cookies. Save the .txt file to '
-                    'your phone (e.g. Downloads).',
+                title: l10n.onboardingStep3Title,
+                description: l10n.onboardingStep3Body,
               ),
               const SizedBox(height: 32),
               ElevatedButton.icon(
@@ -126,7 +144,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       )
                     : const Icon(Icons.file_upload_outlined),
                 label: Text(
-                  _importing ? 'Importing…' : 'Import Cookie File',
+                  _importing ? l10n.importing : l10n.importCookieFile,
                 ),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 14),
@@ -159,8 +177,9 @@ class _Step extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest,
+        color: AppTheme.surface,
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppTheme.outline.withValues(alpha: 0.5)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

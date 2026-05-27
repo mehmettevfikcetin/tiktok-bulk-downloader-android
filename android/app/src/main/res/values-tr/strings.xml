@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notif_app_title">TikTok İndirici</string>
+    <string name="notif_preparing">İndirmeler hazırlanıyor…</string>
+    <string name="notif_done">Tamamlandı — %1$d kaydedildi · %2$d atlandı · %3$d başarısız</string>
+    <string name="notif_downloading_with_title">İndiriliyor %1$d/%2$d — %3$s</string>
+    <string name="notif_downloading_no_title">İndiriliyor %1$d/%2$d</string>
+    <string name="notif_cancel">İptal</string>
+    <string name="notif_channel_desc">Arka plan indirme ilerlemesi</string>
+</resources>

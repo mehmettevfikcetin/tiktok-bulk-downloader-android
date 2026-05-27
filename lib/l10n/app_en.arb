@@ -1,0 +1,193 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "TikTok Downloader",
+
+  "updateAvailableTitle": "Update available",
+  "updateAvailableBody": "A newer version of TikTok Downloader is available.\n\nCurrent: v{current}\n\nLatest: v{latest}",
+  "@updateAvailableBody": {
+    "placeholders": {
+      "current": {"type": "String"},
+      "latest": {"type": "String"}
+    }
+  },
+  "later": "Later",
+  "download": "Download",
+
+  "onboardingTitle": "Set Up Cookies",
+  "onboardingIntro": "TikTok requires cookies from a logged-in browser to download your collections. Follow these steps:",
+  "onboardingStep1Title": "Install Firefox for Android",
+  "onboardingStep1Body": "You need Firefox because Chrome on Android does not support extensions.",
+  "openPlayStore": "Open Play Store",
+  "onboardingStep2Title": "Install the cookies.txt extension",
+  "onboardingStep2Body": "In Firefox, install the \"cookies.txt\" extension by Lennon Hill from the Firefox Add-ons site.",
+  "openAddonPage": "Open Add-on Page",
+  "onboardingStep3Title": "Export your cookies",
+  "onboardingStep3Body": "Log into TikTok in Firefox, then tap the extension icon and export your cookies. Save the .txt file to your phone (e.g. Downloads).",
+  "importing": "Importing…",
+  "importCookieFile": "Import Cookie File",
+  "couldNotOpenUrl": "Could not open {url}",
+  "@couldNotOpenUrl": {
+    "placeholders": {
+      "url": {"type": "String"}
+    }
+  },
+  "noFileSelected": "No file selected.",
+  "importFailed": "Import failed: {error}",
+  "@importFailed": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+
+  "cookiesOkNoAge": "Cookies OK",
+  "cookiesOkWithAge": "Cookies OK ({days}d old)",
+  "@cookiesOkWithAge": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "cookiesAgingNoAge": "Cookies aging",
+  "cookiesAgingWithAge": "Cookies aging ({days}d)",
+  "@cookiesAgingWithAge": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "cookiesExpiredNoAge": "Cookies expired — re-import",
+  "cookiesExpiredWithAge": "Cookies expired ({days}d) — re-import",
+  "@cookiesExpiredWithAge": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "noCookiesImported": "No cookies imported",
+
+  "pasteTikTokFirst": "Paste a TikTok URL first.",
+  "notATikTokUrl": "That does not look like a TikTok URL.",
+  "starting": "Starting…",
+  "notificationsDenied": "Notifications denied. Downloads will still run, but progress will not be shown in the notification shade.",
+  "failedToStartDownloads": "Failed to start downloads: {error}",
+  "@failedToStartDownloads": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+  "cancelFailed": "Cancel failed: {error}",
+  "@cancelFailed": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+  "retryFailed": "Retry failed: {error}",
+  "@retryFailed": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+  "ffmpegInitFailed": "FFmpeg init failed: {error}",
+  "@ffmpegInitFailed": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+  "reimportCookieTitle": "Re-import Cookie",
+  "reimportCookieSubtitle": "Pick a fresh cookies.txt",
+  "openSettingsAction": "Open Settings",
+  "cookiesImported": "Cookies imported.",
+  "reimportFailed": "Re-import failed: {error}",
+  "@reimportFailed": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+  "settingsTooltip": "Settings",
+
+  "cookiesNeededTitle": "Cookies needed",
+  "cookiesNeededBody": "Import a cookies.txt file to start fetching TikTok videos.",
+  "importCookie": "Import Cookie",
+  "noVideosFoundTitle": "No videos found",
+  "noVideosFoundBody": "That URL returned no items. Try a different collection or profile.",
+  "noVideosYetTitle": "No videos yet",
+  "noVideosYetBody": "Paste a TikTok collection or profile URL above and tap Fetch Links.",
+
+  "urlInputLabel": "Collection or profile URL",
+  "urlInputHint": "https://www.tiktok.com/@user/collection/…",
+  "fetchLinks": "Fetch Links",
+  "working": "Working…",
+
+  "videosFetched": "{total, plural, one{# video fetched} other{# videos fetched}}",
+  "@videosFetched": {
+    "placeholders": {
+      "total": {"type": "int"}
+    }
+  },
+  "statDone": "Done",
+  "statSkipped": "Skipped",
+  "statFailed": "Failed",
+  "doneOverTotal": "{completed}/{total}",
+  "@doneOverTotal": {
+    "placeholders": {
+      "completed": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "downloadingButton": "Downloading…",
+  "startButton": "Start ({total})",
+  "@startButton": {
+    "placeholders": {
+      "total": {"type": "int"}
+    }
+  },
+  "pauseComingSoon": "Pause coming soon",
+  "pause": "Pause",
+  "cancel": "Cancel",
+
+  "errorCopiedToClipboard": "Error copied to clipboard",
+  "retry": "Retry",
+  "copy": "Copy",
+  "viewFullError": "View full error",
+  "errorScreenTitle": "Error",
+  "unknownError": "Unknown error",
+
+  "sectionCookies": "Cookies",
+  "sectionDownloadLocation": "Download location",
+  "sectionAbout": "About",
+  "sectionAppearance": "Appearance",
+  "reimportCookiesItem": "Re-import cookies",
+  "reimportCookiesItemSub": "Pick a fresh cookies.txt file",
+  "clearCookies": "Clear cookies",
+  "clearCookiesSub": "Returns to onboarding",
+  "downloadLocationBody": "Files are saved here. Folder selection is not configurable in this version.",
+  "aboutAppName": "TikTok Downloader",
+  "versionLabel": "Version {version}",
+  "@versionLabel": {
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
+  "engine": "Engine",
+  "engineSub": "yt-dlp via Chaquopy",
+  "clearCookiesDialogTitle": "Clear cookies?",
+  "clearCookiesDialogBody": "You'll need to import cookies again before downloading. Existing downloads in your Downloads folder are not affected.",
+  "clear": "Clear",
+  "clearCookiesFailed": "Failed to clear cookies: {error}",
+  "@clearCookiesFailed": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+
+  "language": "Language",
+  "languageTurkish": "Türkçe",
+  "languageEnglish": "English",
+
+  "statusSaved": "Saved",
+  "statusSkipped": "Skipped",
+  "statusFailed": "Failed",
+  "statusCancelled": "Cancelled",
+  "statusDownloading": "Downloading",
+  "statusPaused": "Paused",
+  "statusQueued": "Queued",
+  "statusDone": "Done"
+}

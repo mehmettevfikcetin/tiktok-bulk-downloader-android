@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 
+import '../models/download_progress_event.dart';
 import '../models/tiktok_video.dart';
 
 class PythonService {
@@ -9,8 +10,17 @@ class PythonService {
   static const EventChannel _progressChannel =
       EventChannel('com.tevfik.tiktok_downloader/link_progress');
 
+  static const EventChannel _downloadProgressChannel =
+      EventChannel('com.tevfik.tiktok_downloader/download_progress');
+
   Stream<String> get linkProgressStream =>
       _progressChannel.receiveBroadcastStream().map((event) => event.toString());
+
+  Stream<DownloadProgressEvent> get downloadProgressStream =>
+      _downloadProgressChannel
+          .receiveBroadcastStream()
+          .map((event) =>
+              DownloadProgressEvent.fromMap(event as Map<dynamic, dynamic>));
 
   Future<String> getYtdlpVersion() async {
     final result = await _channel.invokeMethod<String>('getYtdlpVersion');
@@ -54,5 +64,30 @@ class PythonService {
         .whereType<Map<dynamic, dynamic>>()
         .map(TikTokVideo.fromMap)
         .toList(growable: false);
+  }
+
+  Future<void> startDownloads(List<TikTokVideo> videos) async {
+    final payload = videos
+        .map((v) => {
+              'id': v.id,
+              'url': v.url,
+              'title': v.title,
+            })
+        .toList(growable: false);
+    await _channel.invokeMethod<void>('startDownloads', {'videos': payload});
+  }
+
+  Future<void> pauseDownloads() async {
+    await _channel.invokeMethod<void>('pauseDownloads');
+  }
+
+  Future<void> cancelDownloads() async {
+    await _channel.invokeMethod<void>('cancelDownloads');
+  }
+
+  Future<bool> isDownloadServiceRunning() async {
+    final result =
+        await _channel.invokeMethod<bool>('isDownloadServiceRunning');
+    return result ?? false;
   }
 }
