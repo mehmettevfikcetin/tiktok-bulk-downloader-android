@@ -40,6 +40,7 @@ android {
         versionName = flutter.versionName
 
         ndk {
+            abiFilters.clear()
             abiFilters += listOf(project.findProperty("targetAbi") as String? ?: "arm64-v8a")
         }
     }
