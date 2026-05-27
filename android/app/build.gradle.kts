@@ -17,7 +17,6 @@ if (keystorePropertiesFile.exists()) {
 
 // Per-ABI builds: pass -PtargetAbi=<abi> to scope the build to a single ABI.
 // Default (no property) is arm64-v8a — Chaquopy Python 3.12 does not support armeabi-v7a.
-val perBuildAbi: String? = project.findProperty("targetAbi") as String?
 
 android {
     namespace = "com.tevfik.tiktok_downloader"
@@ -41,7 +40,7 @@ android {
         versionName = flutter.versionName
 
         ndk {
-            abiFilters += if (perBuildAbi != null) listOf(perBuildAbi) else listOf("arm64-v8a")
+            abiFilters += listOf(project.findProperty("targetAbi") as String? ?: "arm64-v8a")
         }
     }
 
