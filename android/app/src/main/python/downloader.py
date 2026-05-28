@@ -42,9 +42,15 @@ def extract_id_from_filename(filename):
     return m.group(1) if m else None
 
 
+def _log(msg):
+    # Chaquopy routes stdout to logcat (tag python.stdout).
+    print('[smartskip] ' + str(msg))
+
+
 def load_downloaded_ids(ids_file_path):
     ids = set()
     if not ids_file_path or not os.path.exists(ids_file_path):
+        _log('loaded 0 ledger ids from {}'.format(ids_file_path))
         return ids
     try:
         with open(ids_file_path, 'r', encoding='utf-8') as f:
@@ -54,6 +60,7 @@ def load_downloaded_ids(ids_file_path):
                     ids.add(vid)
     except Exception:
         pass
+    _log('loaded {} ledger ids from {}'.format(len(ids), ids_file_path))
     return ids
 
 
@@ -64,8 +71,51 @@ def save_downloaded_id(ids_file_path, video_id):
         os.makedirs(os.path.dirname(ids_file_path), exist_ok=True)
         with open(ids_file_path, 'a', encoding='utf-8') as f:
             f.write(video_id + '\n')
+        _log('saved id={} -> {}'.format(video_id, ids_file_path))
     except Exception:
         pass
+
+
+def rewrite_downloaded_ids(ids_file_path, ids):
+    if not ids_file_path:
+        return
+    try:
+        os.makedirs(os.path.dirname(ids_file_path), exist_ok=True)
+        with open(ids_file_path, 'w', encoding='utf-8') as f:
+            for vid in ids:
+                if vid:
+                    f.write(vid + '\n')
+    except Exception:
+        pass
+
+
+def load_on_disk_ids(storage_helper):
+    """Set of video IDs whose files actually exist in Downloads/TikTok Downloader/.
+
+    The persisted files live in MediaStore, not `output_dir` (which is the
+    ephemeral app cache), so disk presence must be queried via the Kotlin
+    bridge rather than scanned from the filesystem.
+    """
+    ids = set()
+    if storage_helper is None:
+        _log('on_disk: storage_helper is None')
+        return ids
+    try:
+        raw = storage_helper.list_existing_ids()
+        try:
+            items = list(raw)
+        except TypeError:
+            # Chaquopy may hand back a java.util.List proxy that isn't directly
+            # iterable; fall back to index access.
+            items = [raw.get(i) for i in range(raw.size())]
+        for vid in items:
+            vid = str(vid).strip()
+            if vid:
+                ids.add(vid)
+    except Exception as e:  # noqa: BLE001 — surface the real cause in logcat
+        _log('on_disk: list_existing_ids failed: {}'.format(e))
+    _log('on_disk {} ids sample={}'.format(len(ids), list(ids)[:5]))
+    return ids
 
 
 def _is_cancelled(cancel_check):
@@ -280,8 +330,15 @@ def process_queue(
     """
     os.makedirs(output_dir, exist_ok=True)
     existing_ids = load_downloaded_ids(ids_file_path)
+    on_disk_ids = load_on_disk_ids(storage_helper)
     total = len(videos_list)
     stats = {'completed': 0, 'skipped': 0, 'errors': 0, 'cancelled': 0}
+
+    _log('queue start: ids_file_path={}'.format(ids_file_path))
+    _log('queue start: ledger={} sample={}'.format(
+        len(existing_ids), list(existing_ids)[:5]))
+    _log('queue start: on_disk={} sample={}'.format(
+        len(on_disk_ids), list(on_disk_ids)[:5]))
 
     for i, entry in enumerate(videos_list):
         if _is_cancelled(cancel_check):
@@ -304,18 +361,23 @@ def process_queue(
         })
 
         if video_id and video_id in existing_ids:
-            stats['skipped'] += 1
-            _emit(progress_callback, {
-                'videoId': video_id,
-                'index': i,
-                'total': total,
-                'percent': 100,
-                'status': 'skipped',
-                'error': None,
-                'title': title,
-            })
-            time.sleep(SKIP_MICRO_DELAY)
-            continue
+            if video_id in on_disk_ids:
+                stats['skipped'] += 1
+                _emit(progress_callback, {
+                    'videoId': video_id,
+                    'index': i,
+                    'total': total,
+                    'percent': 100,
+                    'status': 'skipped',
+                    'error': None,
+                    'title': title,
+                })
+                time.sleep(SKIP_MICRO_DELAY)
+                continue
+            # File was deleted from disk — drop the stale ledger entry and
+            # re-download below.
+            existing_ids.discard(video_id)
+            rewrite_downloaded_ids(ids_file_path, existing_ids)
 
         result = download_video(
             video_url=url,

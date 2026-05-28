@@ -167,13 +167,13 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingStep2Body.
   ///
   /// In en, this message translates to:
-  /// **'In Firefox, install the \"cookies.txt\" extension by Lennon Hill from the Firefox Add-ons site.'**
+  /// **'To manually add the extension to Firefox:\n1. Tap the three-dot menu (⋮) in Firefox\n2. Tap \'Add-ons\'\n3. Scroll to the bottom, tap \'Find more add-ons\'\n4. Search for \'cookies.txt\'\n5. Tap the extension, then tap \'Add to Firefox\'\n6. Accept the permissions'**
   String get onboardingStep2Body;
 
   /// No description provided for @openAddonPage.
   ///
   /// In en, this message translates to:
-  /// **'Open Add-on Page'**
+  /// **'Open Add-on Page in Firefox'**
   String get openAddonPage;
 
   /// No description provided for @onboardingStep3Title.
@@ -185,7 +185,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingStep3Body.
   ///
   /// In en, this message translates to:
-  /// **'Log into TikTok in Firefox, then tap the extension icon and export your cookies. Save the .txt file to your phone (e.g. Downloads).'**
+  /// **'To export your cookies:\n1. Log into TikTok in Firefox\n2. Tap the three-dot menu (⋮), then tap \'Add-ons\'\n3. Tap \'cookies.txt\' from the list\n4. In the screen that appears, tap \'Download\' next to \'Current Site\'\n5. If the download does not start: open your recent apps screen, then tap Firefox again — the download panel will appear automatically\n6. Save the downloaded .txt file — you will import it in the next step'**
   String get onboardingStep3Body;
 
   /// No description provided for @importing.
@@ -362,6 +362,12 @@ abstract class AppLocalizations {
   /// **'Import Cookie'**
   String get importCookie;
 
+  /// No description provided for @singleVideoNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'This link contains a single video. To download collections, create a collection on TikTok and paste that link.'**
+  String get singleVideoNotice;
+
   /// No description provided for @noVideosFoundTitle.
   ///
   /// In en, this message translates to:
@@ -371,7 +377,7 @@ abstract class AppLocalizations {
   /// No description provided for @noVideosFoundBody.
   ///
   /// In en, this message translates to:
-  /// **'That URL returned no items. Try a different collection or profile.'**
+  /// **'That URL returned no items. Try a different collection.'**
   String get noVideosFoundBody;
 
   /// No description provided for @noVideosYetTitle.
@@ -383,13 +389,13 @@ abstract class AppLocalizations {
   /// No description provided for @noVideosYetBody.
   ///
   /// In en, this message translates to:
-  /// **'Paste a TikTok collection or profile URL above and tap Fetch Links.'**
+  /// **'Paste a TikTok collection URL above and tap Fetch Links.'**
   String get noVideosYetBody;
 
   /// No description provided for @urlInputLabel.
   ///
   /// In en, this message translates to:
-  /// **'Collection or profile URL'**
+  /// **'Collection URL'**
   String get urlInputLabel;
 
   /// No description provided for @urlInputHint.

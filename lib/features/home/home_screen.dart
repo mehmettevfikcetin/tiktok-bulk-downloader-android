@@ -120,6 +120,9 @@ class _HomeScreenState extends State<HomeScreen> {
         _videos = videos;
         _hasFetched = true;
       });
+      if (videos.length == 1 && videos.first.isSingleVideo) {
+        _showInfo(l10n.singleVideoNotice);
+      }
     } catch (e) {
       if (!mounted) return;
       _showError('$e');
@@ -262,12 +265,13 @@ class _HomeScreenState extends State<HomeScreen> {
       } catch (_) {}
     }
     if (!mounted) return;
-    Navigator.of(context).pushAndRemoveUntil(
+    final navigator = Navigator.of(context);
+    navigator.pushAndRemoveUntil(
       MaterialPageRoute<void>(
         builder: (_) => OnboardingScreen(
           cookieService: widget.cookieService,
           onCompleted: () {
-            Navigator.of(context).pushAndRemoveUntil(
+            navigator.pushAndRemoveUntil(
               MaterialPageRoute<void>(
                 builder: (_) =>
                     HomeScreen(cookieService: widget.cookieService),
@@ -285,6 +289,19 @@ class _HomeScreenState extends State<HomeScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: AppTheme.error,
+        duration: const Duration(seconds: 6),
+        content: Text(
+          message,
+          style: const TextStyle(color: AppTheme.bg),
+        ),
+      ),
+    );
+  }
+
+  void _showInfo(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: AppTheme.warning,
         duration: const Duration(seconds: 6),
         content: Text(
           message,

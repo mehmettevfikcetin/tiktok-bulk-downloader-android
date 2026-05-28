@@ -14,7 +14,6 @@ import java.io.FileInputStream
 object FileStorageHelper {
     private const val TAG = "FileStorageHelper"
     private const val SUBDIR = "TikTok Downloader"
-    private val FILENAME_ID_RE = Regex("_(\\d+)\\.mp4$")
 
     private fun downloadsCollection(): Uri =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -120,13 +119,19 @@ object FileStorageHelper {
                 val nameCol = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME)
                 while (cursor.moveToNext()) {
                     val name = cursor.getString(nameCol) ?: continue
-                    val match = FILENAME_ID_RE.find(name) ?: continue
-                    ids.add(match.groupValues[1])
+                    // id is the token between the LAST underscore and the extension.
+                    val id = name.substringBeforeLast(".").substringAfterLast("_", "")
+                    // MediaStore appends " (1)", " (2)", ... to de-duplicate
+                    // display names; strip it so all copies map to the base id.
+                    val cleanId = id.replace(Regex("""\s*\(\d+\)$"""), "").trim()
+                    Log.i(TAG, "mediastore file='$name' -> id='$cleanId'")
+                    if (cleanId.isNotBlank()) ids.add(cleanId)
                 }
             }
         } catch (t: Throwable) {
             Log.w(TAG, "listExistingDownloadedIds failed", t)
         }
+        Log.i(TAG, "listExistingDownloadedIds ids=$ids")
         return ids
     }
 

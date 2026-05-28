@@ -74,6 +74,22 @@ def fetch_collection_links(collection_url, cookie_path, ffmpeg_path, progress_ca
     entries = (info or {}).get('entries') or []
     total = len(entries)
     if total == 0:
+        # A single video URL resolves to a video dict (no playlist entries).
+        # Return it as a one-item list so it still downloads, tagged so the UI
+        # can show a friendly "this is a single video" notice instead of error.
+        if info and info.get('_type') != 'playlist' and (
+            info.get('id') or info.get('webpage_url')
+        ):
+            single = {
+                'id': info.get('id') or '',
+                'title': info.get('title') or info.get('id') or 'Untitled',
+                'url': info.get('webpage_url') or collection_url,
+                'thumbnail': _pick_thumbnail(info),
+                'duration': int(info.get('duration') or 0),
+                'single': 'true',
+            }
+            _emit("Done — 1 video")
+            return [single]
         raise RuntimeError("No videos found at this URL.")
 
     results = []

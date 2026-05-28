@@ -3,11 +3,12 @@
 -keep class * extends com.chaquo.python.PyObject { *; }
 -dontwarn com.chaquo.python.**
 
-# App entry points and classes called from Python via reflection
--keep class com.tevfik.tiktok_downloader.MainActivity { *; }
--keep class com.tevfik.tiktok_downloader.PythonBridge { *; }
--keep class com.tevfik.tiktok_downloader.DownloadService { *; }
--keep class com.tevfik.tiktok_downloader.FileStorageHelper { *; }
+# App classes reached from Python (Chaquopy) via reflection and from Flutter
+# channels. The ** wildcard is required so nested/anonymous classes — e.g.
+# DownloadService$ServiceProgressReporter, $CancelCheck, the EventChannel
+# StreamHandler anon classes — are kept by name, not just the top-level types.
+-keep class com.tevfik.tiktok_downloader.** { *; }
+-keepclassmembers class com.tevfik.tiktok_downloader.** { *; }
 
 # Flutter embedding (precautionary)
 -keep class io.flutter.plugin.** { *; }

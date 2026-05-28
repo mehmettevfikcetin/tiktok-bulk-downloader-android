@@ -22,6 +22,7 @@ class DownloadService : Service() {
         const val ACTION_START = "com.tevfik.tiktok_downloader.action.START"
         const val ACTION_CANCEL = "com.tevfik.tiktok_downloader.action.CANCEL"
         const val ACTION_PAUSE = "com.tevfik.tiktok_downloader.action.PAUSE"
+        const val ACTION_RESET = "com.tevfik.tiktok_downloader.action.RESET"
         const val EXTRA_VIDEOS_JSON = "videos_json"
 
         private const val CHANNEL_ID = "tiktok_downloads"
@@ -69,6 +70,22 @@ class DownloadService : Service() {
             Log.i(TAG, "cancel requested via intent")
             return START_NOT_STICKY
         }
+        if (action == ACTION_RESET) {
+            // Force-clear stale flags so a subsequent START can begin a fresh
+            // queue. A terminated Thread instance still satisfies `!= null`
+            // but reports `isAlive = false`, so we check both explicitly and
+            // allow reset whenever the worker is either gone or finished.
+            val workerDead = workerThread == null || !workerThread!!.isAlive
+            if (workerDead) {
+                isRunning = false
+                cancelled = false
+                workerThread = null
+                Log.i(TAG, "state reset (worker dead or absent)")
+            } else {
+                Log.w(TAG, "RESET ignored: worker thread is still alive")
+            }
+            return START_NOT_STICKY
+        }
 
         val json = intent?.getStringExtra(EXTRA_VIDEOS_JSON)
         if (json.isNullOrBlank()) {
@@ -78,7 +95,18 @@ class DownloadService : Service() {
             return START_NOT_STICKY
         }
 
-        if (isRunning) {
+        // If isRunning is set but the worker thread is dead/missing, the prior
+        // queue finished or was killed without running its `finally`. Treat
+        // the static flag as stale and reset it so this START isn't dropped.
+        val workerDead = workerThread == null || !workerThread!!.isAlive
+        if (isRunning && workerDead) {
+            Log.w(TAG, "stale isRunning=true with dead/absent worker; resetting")
+            isRunning = false
+            cancelled = false
+            workerThread = null
+        }
+
+        if (isRunning && !workerDead) {
             Log.w(TAG, "ignoring start while running")
             return START_NOT_STICKY
         }
@@ -109,7 +137,17 @@ class DownloadService : Service() {
 
         acquireWakeLock()
 
-        workerThread = Thread({ runQueue(json) }, "DownloadService-Worker").also {
+        workerThread = Thread({
+            try {
+                runQueue(json)
+            } finally {
+                // Belt-and-suspenders cleanup so the worker reference is
+                // always nulled out — covers any path that bypasses
+                // runQueue's own finally (e.g. an Error thrown before entry).
+                isRunning = false
+                workerThread = null
+            }
+        }, "DownloadService-Worker").also {
             it.isDaemon = true
             it.start()
         }
@@ -340,6 +378,7 @@ class DownloadService : Service() {
 
     override fun onDestroy() {
         cancelled = true
+        isRunning = false
         releaseWakeLock()
         super.onDestroy()
     }

@@ -47,17 +47,17 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get onboardingStep2Body =>
-      'Firefox\'ta, Firefox Add-ons sitesinden Lennon Hill tarafından geliştirilen \"cookies.txt\" eklentisini yükleyin.';
+      'Eklentiyi Firefox\'a manuel olarak eklemek için:\n1. Firefox\'ta sağ üstteki üç noktaya (⋮) dokunun\n2. \'Uzantılar\' seçeneğine dokunun\n3. En alta kaydırın, \'Daha fazla uzantı bul\'a dokunun\n4. Arama kutusuna \'cookies.txt\' yazın\n5. Çıkan eklentiye dokunun, \'Firefox\'a Ekle\' butonuna basın\n6. İzinleri kabul edin';
 
   @override
-  String get openAddonPage => 'Eklenti Sayfasını Aç';
+  String get openAddonPage => 'Firefox\'ta Eklenti Sayfasını Aç';
 
   @override
   String get onboardingStep3Title => 'Çerezlerinizi dışa aktarın';
 
   @override
   String get onboardingStep3Body =>
-      'Firefox\'ta TikTok\'a giriş yapın, ardından eklenti simgesine dokunup çerezlerinizi dışa aktarın. .txt dosyasını telefonunuza kaydedin (örneğin İndirilenler).';
+      'Cookies.txt dosyasını dışa aktarmak için:\n1. Firefox\'ta TikTok\'a giriş yapın\n2. Sağ üstteki üç noktaya (⋮) dokunun, \'Uzantılar\'a dokunun\n3. Listeden \'cookies.txt\' eklentisine dokunun\n4. Açılan ekranda \'Current Site\' satırındaki \'Download\' butonuna basın\n5. İndirme başlamazsa: telefondaki son uygulamalar ekranına çıkın (görev yöneticisi), ardından Firefox\'a tekrar dokunun — indirme paneli otomatik olarak gelecektir\n6. İndirilen .txt dosyasını bir yere kaydedin, sonraki adımda içe aktaracaksınız';
 
   @override
   String get importing => 'İçe aktarılıyor…';
@@ -170,21 +170,25 @@ class AppLocalizationsTr extends AppLocalizations {
   String get importCookie => 'Çerezi İçe Aktar';
 
   @override
+  String get singleVideoNotice =>
+      'Bu link tek bir video içeriyor. Koleksiyon indirmek için TikTok\'ta bir koleksiyon oluşturun ve o linki yapıştırın.';
+
+  @override
   String get noVideosFoundTitle => 'Video bulunamadı';
 
   @override
   String get noVideosFoundBody =>
-      'Bu URL hiçbir öğe döndürmedi. Farklı bir koleksiyon veya profil deneyin.';
+      'Bu URL hiçbir öğe döndürmedi. Farklı bir koleksiyon deneyin.';
 
   @override
   String get noVideosYetTitle => 'Henüz video yok';
 
   @override
   String get noVideosYetBody =>
-      'Yukarıya bir TikTok koleksiyonu veya profil URL\'si yapıştırın ve Bağlantıları Getir\'e dokunun.';
+      'Yukarıya bir TikTok koleksiyonu URL\'si yapıştırın ve Bağlantıları Getir\'e dokunun.';
 
   @override
-  String get urlInputLabel => 'Koleksiyon veya profil URL\'si';
+  String get urlInputLabel => 'Koleksiyon URL\'si';
 
   @override
   String get urlInputHint => 'https://www.tiktok.com/@kullanici/collection/…';

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/services/cookie_service.dart';
+import '../../core/services/locale_controller.dart';
 import '../../core/theme/app_theme.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -25,7 +26,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   static const _extensionUrl =
       'https://addons.mozilla.org/en-US/firefox/addon/cookies-txt/';
 
+  final LocaleController _localeController = LocaleController();
+
   bool _importing = false;
+
+  void _toggleLanguage() {
+    final isEnglish = appLocale.value.languageCode == 'en';
+    _localeController.setLocale(isEnglish ? kDefaultLocale : kEnglishLocale);
+  }
 
   Future<void> _open(String url) async {
     final uri = Uri.parse(url);
@@ -73,7 +81,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.onboardingTitle)),
+      appBar: AppBar(
+        title: Text(l10n.onboardingTitle),
+        actions: [
+          TextButton(
+            onPressed: _toggleLanguage,
+            child: Text(
+              appLocale.value.languageCode == 'en' ? 'EN' : 'TR',
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),

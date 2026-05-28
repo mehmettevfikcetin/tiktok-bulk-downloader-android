@@ -212,6 +212,20 @@ object PythonBridge {
     }
 
     private fun startDownloadService(ctx: Context, videos: List<Map<String, Any?>>) {
+        // Best-effort: clear any stale `isRunning` flag left behind by a
+        // previously crashed/killed service before issuing START. Wrapped in
+        // try/catch because Android 8+ background-start restrictions can
+        // reject a plain startService — in that case the static state was
+        // already clean (no live service), so the START below is safe.
+        try {
+            val resetIntent = Intent(ctx, DownloadService::class.java).apply {
+                action = DownloadService.ACTION_RESET
+            }
+            ctx.startService(resetIntent)
+        } catch (t: Throwable) {
+            Log.w(TAG, "reset intent failed (state likely already clean): ${t.message}")
+        }
+
         val arr = JSONArray()
         for (v in videos) {
             val obj = JSONObject()

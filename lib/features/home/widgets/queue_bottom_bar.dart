@@ -59,33 +59,33 @@ class QueueBottomBar extends StatelessWidget {
                       queueActive ? Icons.downloading : Icons.download,
                       size: 20,
                     ),
-                    label: Text(
-                      queueActive
-                          ? l10n.downloadingButton
-                          : l10n.startButton(total),
+                    label: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        queueActive
+                            ? l10n.downloadingButton
+                            : l10n.startButton(total),
+                        maxLines: 1,
+                      ),
                     ),
                   ),
                 ),
                 const SizedBox(width: 8),
-                Tooltip(
-                  message: l10n.pauseComingSoon,
+                Expanded(
                   child: OutlinedButton.icon(
-                    onPressed: null,
-                    icon: const Icon(Icons.pause, size: 18),
-                    label: Text(l10n.pause),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                OutlinedButton.icon(
-                  onPressed: queueActive ? onCancel : null,
-                  icon: const Icon(Icons.stop, size: 18),
-                  label: Text(l10n.cancel),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: queueActive ? AppTheme.error : null,
-                    side: BorderSide(
-                      color: queueActive
-                          ? AppTheme.error.withValues(alpha: 0.5)
-                          : AppTheme.outline,
+                    onPressed: queueActive ? onCancel : null,
+                    icon: const Icon(Icons.stop, size: 18),
+                    label: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(l10n.cancel, maxLines: 1),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: queueActive ? AppTheme.error : null,
+                      side: BorderSide(
+                        color: queueActive
+                            ? AppTheme.error.withValues(alpha: 0.5)
+                            : AppTheme.outline,
+                      ),
                     ),
                   ),
                 ),

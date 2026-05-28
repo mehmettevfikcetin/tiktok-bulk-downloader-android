@@ -5,6 +5,7 @@ class TikTokVideo {
     required this.url,
     required this.thumbnail,
     required this.duration,
+    this.isSingleVideo = false,
   });
 
   final String id;
@@ -12,6 +13,7 @@ class TikTokVideo {
   final String url;
   final String thumbnail;
   final int duration;
+  final bool isSingleVideo;
 
   factory TikTokVideo.fromMap(Map<dynamic, dynamic> map) {
     final rawDuration = map['duration'];
@@ -22,6 +24,7 @@ class TikTokVideo {
       url: (map['url'] ?? '').toString(),
       thumbnail: (map['thumbnail'] ?? '').toString(),
       duration: duration,
+      isSingleVideo: (map['single'] ?? '').toString() == 'true',
     );
   }
 
