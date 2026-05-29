@@ -92,7 +92,7 @@ TikTok çerezleri zamanla geçersiz hale gelir. Tarayıcıdan tekrar `cookies.tx
 Uygulama, Python yorumlayıcısını cihazda çalıştırmak için Chaquopy kullanır. Chaquopy Python 3.12 yalnızca `arm64-v8a` cihazları destekler. Eski (pre-2016) 32-bit ARM ve x86 emülatörler/cihazlar desteklenmez.
 
 **İndirilen videolar nereye kaydediliyor?**
-İlk indirme sırasında uygulama, sizden bir kayıt klasörü seçmenizi ister (Android SAF — Storage Access Framework). Tüm videolar bu klasöre kaydedilir; dilediğiniz zaman ayarlardan değiştirebilirsiniz.
+Tüm videolar (Dosyalar -> Download -> TikTok Downloader) bu klasöre kaydedilir.
 
 ---
 
