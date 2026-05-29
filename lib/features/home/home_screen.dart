@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../core/models/tiktok_video.dart';
@@ -126,7 +127,9 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     } catch (e) {
       if (!mounted) return;
-      _showError('$e');
+      // Every failure here — invalid/incomplete URL, private content, network
+      // errors — is surfaced as a clean red banner, never a raw exception.
+      _showError(_cleanErrorMessage(e));
     } finally {
       if (mounted) {
         setState(() {
@@ -284,6 +287,22 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       (_) => false,
     );
+  }
+
+  /// Turns any thrown error into a short, human-readable message. Python
+  /// errors arrive as a [PlatformException] whose `toString()` includes the
+  /// error code and full stack trace; we keep only the clean message (and
+  /// strip any leading Python class prefix like "RuntimeError: ").
+  String _cleanErrorMessage(Object error) {
+    if (error is PlatformException) {
+      final message = error.message?.trim();
+      if (message != null && message.isNotEmpty) {
+        final match =
+            RegExp(r'^[A-Za-z_][A-Za-z0-9_.]*Error:\s*').firstMatch(message);
+        return match != null ? message.substring(match.end).trim() : message;
+      }
+    }
+    return error.toString();
   }
 
   void _showError(String message) {

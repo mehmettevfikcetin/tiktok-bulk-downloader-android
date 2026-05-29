@@ -66,10 +66,10 @@ def fetch_collection_links(collection_url, cookie_path, ffmpeg_path, progress_ca
         with yt_dlp.YoutubeDL(opts) as ydl:
             _emit("Extracting playlist…")
             info = ydl.extract_info(collection_url, download=False)
-    except yt_dlp.utils.DownloadError as e:
-        raise _classify(str(e))
     except Exception as e:
-        raise RuntimeError("Unexpected error: {}".format(e))
+        # Any failure from yt-dlp (DownloadError or otherwise) is turned into a
+        # clean, user-facing message instead of a raw traceback.
+        raise _classify(str(e))
 
     entries = (info or {}).get('entries') or []
     total = len(entries)
@@ -144,12 +144,14 @@ def _pick_thumbnail(entry):
 
 
 def _classify(msg):
-    low = msg.lower()
-    if 'cookie' in low:
-        return RuntimeError("Cookie file invalid or expired — please re-import.")
-    if '403' in low or 'private' in low:
-        return RuntimeError("Login or access error — check cookies and URL.")
-    if 'unable to extract' in low:
-        return RuntimeError("Could not extract links — URL may be wrong or TikTok changed its API.")
-    trimmed = msg if len(msg) <= 300 else msg[:300] + '…'
-    return RuntimeError("yt-dlp error: {}".format(trimmed))
+    low = (msg or '').lower()
+    if any(k in low for k in ('unable to extract', 'no video', '404', 'not found')):
+        return RuntimeError(
+            "Geçersiz veya eksik TikTok linki. Lütfen doğru bir koleksiyon "
+            "URL'si yapıştırın."
+        )
+    if any(k in low for k in ('login', 'cookie', 'private')):
+        return RuntimeError("Bu içerik özel veya giriş gerektiriyor.")
+    return RuntimeError(
+        "Bağlantı hatası. İnternet bağlantınızı kontrol edin ve tekrar deneyin."
+    )
