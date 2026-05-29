@@ -36,6 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int? _cookieAgeDays;
   List<TikTokVideo> _videos = const [];
   bool _hasFetched = false;
+  bool _showSingleVideoNotice = false;
 
   @override
   void initState() {
@@ -112,6 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _fetchProgress = l10n.starting;
       _videos = const [];
       _hasFetched = false;
+      _showSingleVideoNotice = false;
     });
     try {
       final videos = await _python.fetchLinks(url);
@@ -119,10 +121,9 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         _videos = videos;
         _hasFetched = true;
+        _showSingleVideoNotice =
+            videos.length == 1 && videos.first.isSingleVideo;
       });
-      if (videos.length == 1 && videos.first.isSingleVideo) {
-        _showInfo(l10n.singleVideoNotice);
-      }
     } catch (e) {
       if (!mounted) return;
       _showError('$e');
@@ -298,19 +299,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _showInfo(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: AppTheme.warning,
-        duration: const Duration(seconds: 6),
-        content: Text(
-          message,
-          style: const TextStyle(color: AppTheme.bg),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -349,6 +337,41 @@ class _HomeScreenState extends State<HomeScreen> {
                 onImportCookie: _reimportCookie,
               ),
             ),
+            if (_showSingleVideoNotice)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(12, 10, 8, 10),
+                  decoration: BoxDecoration(
+                    color: AppTheme.warning.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(8),
+                    border:
+                        Border.all(color: AppTheme.warning.withValues(alpha: 0.5)),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.info_outline,
+                          color: AppTheme.warning, size: 20),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          l10n.singleVideoNotice,
+                          style: const TextStyle(
+                              color: AppTheme.onSurface, fontSize: 13),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close, size: 18),
+                        color: AppTheme.muted,
+                        tooltip:
+                            MaterialLocalizations.of(context).closeButtonTooltip,
+                        onPressed: () =>
+                            setState(() => _showSingleVideoNotice = false),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             const Divider(height: 1),
             Expanded(child: _buildQueueArea()),
             if (_videos.isNotEmpty)
