@@ -64,5 +64,9 @@ jobs:
         with:
           files: build/app/outputs/flutter-apk/tiktok-bulk-downloader-arm64-v*.apk
           generate_release_notes: true
+          body: |
+            > **TR:** ⚠️ v1.0.0'dan güncelleme yapıyorsanız: Önce mevcut uygulamayı silin, ardından yeni APK'yı kurun. Bu yalnızca bu seferlik gereklidir.
+            >
+            > **EN:** ⚠️ Upgrading from v1.0.0: You must uninstall the existing app first, then install the new APK. This is only required for this update.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -44,6 +44,16 @@
 
 ---
 
+## ⚠️ Güncelleme Notları / Update Notes
+
+**v1.0.0 → v1.1.0**
+
+> **TR:** v1.0.0'dan güncelleme yapıyorsanız: Önce mevcut uygulamayı silin, ardından yeni APK'yı kurun. Bu yalnızca bu seferlik gereklidir.
+>
+> **EN:** Upgrading from v1.0.0: You must uninstall the existing app first, then install the new APK. This is only required for this update.
+
+---
+
 ## Installation / Kurulum
 
 1. APK'yı [Releases sayfasından](../../releases/latest) indirin (`tiktok-bulk-downloader-arm64-vX.Y.Z.apk`).
