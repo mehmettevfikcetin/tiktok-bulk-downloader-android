@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../core/services/cookie_service.dart';
 import '../../core/services/locale_controller.dart';
@@ -26,11 +27,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
   CookieStatus _status = CookieStatus.missing;
   int? _ageDays;
   bool _loading = true;
+  String _appVersion = '';
 
   @override
   void initState() {
     super.initState();
     _refresh();
+    _loadVersion();
+  }
+
+  Future<void> _loadVersion() async {
+    final info = await PackageInfo.fromPlatform();
+    if (!mounted) return;
+    setState(() => _appVersion = info.version);
   }
 
   Future<void> _refresh() async {
@@ -254,7 +263,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ListTile(
                           leading: const Icon(Icons.info_outline),
                           title: Text(l10n.aboutAppName),
-                          subtitle: Text(l10n.versionLabel(AppTheme.appVersion)),
+                          subtitle: Text(l10n.versionLabel(_appVersion)),
                         ),
                         const Divider(height: 1),
                         ListTile(
